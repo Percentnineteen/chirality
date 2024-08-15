@@ -1,0 +1,76 @@
+// Copyright 2021 Manna Harbour
+// https://github.com/manna-harbour/miryoku
+
+#include <dt-bindings/zmk/ext_power.h>
+#include "../../../../miryoku/config.h"
+#include "./chirality.h"
+#include "../../../../miryoku/mapping/36-minidox.h"
+#include "../../../../miryoku/miryoku.dtsi"
+
+&lt {
+  quick_tap_ms = <200>;
+};
+&hm {
+  quick_tap_ms = <200>; 
+};
+&caps_word {
+  continue-list = <UNDER MINUS>;
+};
+&sponge_lock {
+  continue-list = <UNDER MINUS SPACE>;
+};
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ caps: caps {
+			compatible = "zmk,behavior-hold-tap";
+			label = "caps";
+			#binding-cells = <2>;
+			flavor = "tap-preferred";
+			tapping-term-ms = <200>;
+			bindings = <&sponge_lock>, <&caps_word>;
+		};
+	};
+};
+
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+    BASE_layer {
+      label = "Base";
+      bindings = <
+      &kp Q             &kp W             &kp E             &kp R             &kp T             &kp Y             &kp U             &kp I             &kp O             &kp P
+      &hm LGUI A        &hm LALT S        &hm LCTRL D       &hm LSHFT F       &kp G             &kp H             &hm LSHFT J       &hm LCTRL K       &hm LALT L        &hm LGUI SQT
+      &lt BUTTON Z      &hm RALT X        &kp C             &kp V             &kp B             &kp N             &kp M             &kp COMMA         &hm RALT DOT      &lt BUTTON SLASH
+                                          &lt MEDIA ESC     &lt NAV SPC       &lt MOUSE TAB     &lt SYM RET       &lt NUM BSPC      &lt FUN DEL
+      >;
+    };
+    MEDIA_layer {
+      label = "Media";
+      bindings = < 
+      &bootloader       &reset            U_NA              U_NA              U_NA          &ext_power EP_TOG   &ext_power EP_OFF   &ext_power EP_ON    &rgb_ug RGB_TOG   &rgb_ug RGB_BRI
+      &kp LGUI          &kp LALT          &kp LCTRL         &kp LSHFT         U_NA          &kp C_PREV          &kp C_VOL_DN        &kp C_VOL_UP        &kp C_NEXT        &out OUT_TOG
+      U_NA              &kp RALT          U_NA              U_NA              U_NA          &bt BT_SEL 0        &bt BT_SEL 1        &bt BT_SEL 2        &bt BT_SEL 3      &bt BT_CLR
+                                          U_NA              U_NA              U_NA          &kp C_STOP          &kp C_PP            &kp C_MUTE
+      >;
+    };
+    NAV_layer {
+      label = "Nav";
+      bindings = < 
+        &bootloader       &reset            &ext_power EP_ON  U_NA              U_NA              U_RDO             U_PST             U_CPY             U_CUT             U_UND
+        &kp LGUI          &kp LALT          &kp LCTRL         &kp LSHFT         U_NA              &kp LEFT          &kp DOWN          &kp UP            &kp RIGHT         &caps A B
+        U_NA              &kp RALT          U_NA              U_NA              U_NA              &kp HOME          &kp PG_DN         &kp PG_UP         &kp END           &kp INS
+                                            U_NA              U_NA              U_NA              &kp RET           &kp BSPC          &kp DEL 
+      >;
+    };
+    SYM_layer {
+      label = "Sym";
+      bindings = <
+        &kp LBRC          &kp AMPS          &kp ASTRK         &kp LPAR          &kp RBRC          U_NA              U_NA              U_NA              &reset            &bootloader
+        &kp COLON         &kp DLLR          &kp PRCT          &kp CRRT          &kp PLUS          U_NA              &kp LSHFT         &kp LCTRL         &kp LALT          &kp LGUI
+        &kp TILDE         &kp EXCL          &kp AT            &kp HASH          &kp PIPE          U_NA              U_NA              U_NA              &kp RALT          U_NA
+                                            &kp LPAR          &kp RPAR          &kp UNDER         U_NA              U_NA              U_NA
+      >;
+    };
+  };
+};
