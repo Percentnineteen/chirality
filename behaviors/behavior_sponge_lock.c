@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_sponge_lock
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 
 #include <zmk/endpoints.h>
@@ -60,7 +60,7 @@ static void deactivate_sponge_lock(const struct device *dev) {
 
 static int on_sponge_lock_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_sponge_lock_data *data = dev->data;
 
     if (data->active) {
@@ -80,6 +80,9 @@ static int on_sponge_lock_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_sponge_lock_driver_api = {
     .binding_pressed = on_sponge_lock_binding_pressed,
     .binding_released = on_sponge_lock_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int sponge_lock_keycode_state_changed_listener(const zmk_event_t *eh);
@@ -98,7 +101,9 @@ static bool sponge_lock_is_caps_includelist(const struct behavior_sponge_lock_co
                 continuation->id, continuation->implicit_modifiers);
 
         if (continuation->page == usage_page && continuation->id == usage_id &&
-            continuation->implicit_modifiers == implicit_modifiers) {
+            (continuation->implicit_modifiers &
+             (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
+                continuation->implicit_modifiers) {
             LOG_DBG("Continuing spongelock, found included usage: 0x%02X - 0x%02X", usage_page,
                     usage_id);
             return true;
@@ -179,9 +184,10 @@ static int behavior_sponge_lock_init(const struct device *dev) {
 #define SPONGE_LOCK_LABEL(i, _n) DT_INST_LABEL(i)
 
 #define PARSE_BREAK(i)                                                                             \
-    {.page = ZMK_HID_USAGE_PAGE(i),                                                           \
-     .id = ZMK_HID_USAGE_ID(i),                                                                        \
-     .implicit_modifiers = SELECT_MODS(i)},
+    {                                                                                              \
+        .page = ZMK_HID_USAGE_PAGE(i), .id = ZMK_HID_USAGE_ID(i),                                  \
+        .implicit_modifiers = SELECT_MODS(i)                                                       \
+    }
 
 #define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, continue_list, i))
 
@@ -190,13 +196,12 @@ static int behavior_sponge_lock_init(const struct device *dev) {
     static struct behavior_sponge_lock_config behavior_sponge_lock_config_##n = {                      \
         .index = n,                                                                                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
-        .continuations = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, n)},        \
+        .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_sponge_lock_init, NULL,                       \
-                          &behavior_sponge_lock_data_##n, &behavior_sponge_lock_config_##n,            \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_sponge_lock_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_sponge_lock_init, NULL, &behavior_sponge_lock_data_##n,        \
+                            &behavior_sponge_lock_config_##n, POST_KERNEL,                           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sponge_lock_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
