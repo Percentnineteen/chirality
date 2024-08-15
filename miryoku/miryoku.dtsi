@@ -16,35 +16,35 @@
   keymap {
     compatible = "zmk,keymap";
     BASE_layer {
-      label = "Base";
+      display-name = "Base";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_BASE) >;
     };
     BUTTON_layer {
-      label = "Button";
+      display-name = "Button";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_BUTTON) >;
     };
     NAV_layer {
-      label = "Nav";
+      display-name = "Nav";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_NAV) >;
     };
     MOUSE_layer {
-      label = "Mouse";
+      display-name = "Mouse";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_MOUSE) >;
     };
     MEDIA_layer {
-      label = "Media";
+      display-name = "Media";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_MEDIA) >;
     };
     NUM_layer {
-      label = "Num";
+      display-name = "Num";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_NUM) >;
     };
     SYM_layer {
-      label = "Sym";
+      display-name = "Sym";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_SYM) >;
     };
     FUN_layer {
-      label = "Fun";
+      display-name = "Fun";
       bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_FUN) >;
     };
   };
@@ -54,9 +54,9 @@
   behaviors {
     hm: homerow_mods {
       compatible = "zmk,behavior-hold-tap";
-      label = "HOMEROW_MODS";
+      display-name = "HOMEROW_MODS";
       #binding-cells = <2>;
-      tapping_term_ms = <U_TAPPING_TERM>;
+      tapping-term-ms = <U_TAPPING_TERM>;
       flavor = "tap-preferred";
       bindings = <&kp>, <&kp>;
     };

@@ -7,13 +7,13 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	behaviors {
-		/omit-if-no-ref/ sponge_lock: behavior_sponge_lock {
-			compatible = "zmk,behavior-sponge-lock";
-			label = "SPONGE_LOCK";
-			#binding-cells = <0>;
-			continue-list = <UNDERSCORE SPACE>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ sponge_lock: behavior_sponge_lock {
+            compatible = "zmk,behavior-sponge-lock";
+            #binding-cells = <0>;
+            continue-list = <UNDERSCORE SPACE>;
+            display-name = "SPONGE_LOCK";
+        };
+    };
 };
 

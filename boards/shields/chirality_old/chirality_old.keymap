@@ -4,7 +4,7 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <behaviors/sponge_lock.dtsi>
 #include <dt-bindings/zmk/ext_power.h>
-#include "./chirality.h"
+#include "./chirality_old.h"
 #include "zmk-helpers/helper.h"
 #include "zmk-helpers/key-labels/36.h"
 #include "mouse.dtsi"
