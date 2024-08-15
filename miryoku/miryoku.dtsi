@@ -1,0 +1,110 @@
+// Copyright 2021 Manna Harbour
+// https://github.com/manna-harbour/miryoku
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/outputs.h>
+#if defined (MIRYOKU_KLUDGE_MOUSEKEYSPR)
+  #include <dt-bindings/zmk/mouse.h>
+#endif
+
+#include "miryoku.h"
+
+/ {
+  keymap {
+    compatible = "zmk,keymap";
+    BASE_layer {
+      label = "Base";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_BASE) >;
+    };
+    BUTTON_layer {
+      label = "Button";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_BUTTON) >;
+    };
+    NAV_layer {
+      label = "Nav";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_NAV) >;
+    };
+    MOUSE_layer {
+      label = "Mouse";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_MOUSE) >;
+    };
+    MEDIA_layer {
+      label = "Media";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_MEDIA) >;
+    };
+    NUM_layer {
+      label = "Num";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_NUM) >;
+    };
+    SYM_layer {
+      label = "Sym";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_SYM) >;
+    };
+    FUN_layer {
+      label = "Fun";
+      bindings = < U_MACRO_VA_ARGS(MIRYOKU_MAPPING, MIRYOKU_LAYER_FUN) >;
+    };
+  };
+};
+
+/ {
+  behaviors {
+    hm: homerow_mods {
+      compatible = "zmk,behavior-hold-tap";
+      label = "HOMEROW_MODS";
+      #binding-cells = <2>;
+      tapping_term_ms = <U_TAPPING_TERM>;
+      flavor = "tap-preferred";
+      bindings = <&kp>, <&kp>;
+    };
+  };
+};
+
+#if defined (MIRYOKU_KLUDGE_MOUSEKEYSPR)
+&mmv {
+  acceleration-exponent = <U_MOUSE_MOVE_EXPONENT>;
+  time-to-max-speed-ms = <U_MOUSE_MOVE_TIME>;
+  delay-ms = <U_MOUSE_MOVE_DELAY>;
+};
+/*
+&mwh {
+  acceleration-exponent = <U_MOUSE_SCROLL_EXPONENT>;
+  time-to-max-speed-ms = <U_MOUSE_SCROLL_TIME>;
+  delay-ms = <U_MOUSE_SCROLL_DELAY>;
+};
+*/
+#endif
+
+#if defined (MIRYOKU_KLUDGE_THUMBCOMBOS)
+/ {
+  combos {
+    compatible = "zmk,combos";
+  #if defined (MIRYOKU_LAYERS_FLIP)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BASE, RIGHT, &lt MEDIA ESC)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BASE, LEFT, &lt FUN DEL)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BUTTON, RIGHT, U_BTN2)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BUTTON, LEFT, U_BTN2)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(NAV, LEFT, &kp DEL)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(MOUSE, LEFT, U_BTN2)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(MEDIA, LEFT, &kp K_MUTE)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(NUM, RIGHT, &kp DOT)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(SYM, RIGHT, &kp RPAR)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(FUN, RIGHT, &kp K_APP)
+  #else
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BASE, LEFT, &lt MEDIA ESC)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BASE, RIGHT, &lt FUN DEL)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BUTTON, LEFT, U_BTN2)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(BUTTON, RIGHT, U_BTN2)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(NAV, RIGHT, &kp DEL)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(MOUSE, RIGHT, U_BTN2)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(MEDIA, RIGHT, &kp K_MUTE)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(NUM, LEFT, &kp DOT)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(SYM, LEFT, &kp LPAR)
+    MIRYOKU_KLUDGE_THUMBCOMBOS_MACRO(FUN, LEFT, &kp K_APP)
+  #endif
+  };
+};
+#endif
